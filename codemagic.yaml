@@ -14,13 +14,9 @@ workflows:
           cd android
           gradle wrapper --gradle-version 8.10.2
           chmod +x gradlew
-      - name: Create required directories
-        script: |
-          mkdir -p android/app/build/generated/source/codegen
       - name: Build Android debug APK
         script: |
-          cd android
-          ./gradlew assembleDebug --no-daemon
+          npx react-native build-android --mode debug
     artifacts:
       - android/app/build/outputs/apk/debug/app-debug.apk
     publishing:
