@@ -9,9 +9,9 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
-      - name: Generate autolinking
+      - name: Create required directories
         script: |
-          npx react-native codegen
+          mkdir -p android/app/build/generated/source/codegen
       - name: Build Android debug APK
         script: |
           npx react-native build-android --mode debug
