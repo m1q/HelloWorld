@@ -9,16 +9,39 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+
       - name: Generate Gradle wrapper
         script: |
           cd android
           gradle wrapper --gradle-version 8.10.2
           chmod +x gradlew
+
+      - name: Create autolinking.json
+        script: |
+          mkdir -p android/build/generated/autolinking
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const rnVersion = pkg.dependencies['react-native'] || '0.76.5';
+            const autolink = {
+              reactNativeVersion: rnVersion,
+              dependencies: {}
+            };
+            fs.writeFileSync(
+              'android/build/generated/autolinking/autolinking.json',
+              JSON.stringify(autolink, null, 2)
+            );
+            console.log('autolinking.json created successfully');
+          "
+
       - name: Build Android debug APK
         script: |
-          npx react-native build-android --mode debug
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
     artifacts:
       - android/app/build/outputs/apk/debug/app-debug.apk
+
     publishing:
       email:
         recipients:
