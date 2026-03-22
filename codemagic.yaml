@@ -9,12 +9,18 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+      - name: Generate Gradle wrapper
+        script: |
+          cd android
+          gradle wrapper --gradle-version 8.10.2
+          chmod +x gradlew
       - name: Create required directories
         script: |
           mkdir -p android/app/build/generated/source/codegen
       - name: Build Android debug APK
         script: |
-          npx react-native build-android --mode debug
+          cd android
+          ./gradlew assembleDebug --no-daemon
     artifacts:
       - android/app/build/outputs/apk/debug/app-debug.apk
     publishing:
