@@ -9,17 +9,10 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
-      - name: Setup Gradle wrapper
-        script: |
-          cd android
-          if [ ! -f "gradlew" ]; then
-            gradle wrapper --gradle-version 8.10.2
-          fi
-          chmod +x gradlew
       - name: Build Android debug APK
         script: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon
     artifacts:
       - android/app/build/outputs/apk/debug/app-debug.apk
     publishing:
