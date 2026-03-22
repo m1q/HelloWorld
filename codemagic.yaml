@@ -13,7 +13,6 @@ workflows:
       - name: Remove Zone.Identifier files
         script: |
           find . -name "*Zone.Identifier*" -delete
-          echo "Cleaned Zone.Identifier files"
 
       - name: Generate Gradle wrapper
         script: |
@@ -21,15 +20,27 @@ workflows:
           gradle wrapper --gradle-version 8.10.2
           chmod +x gradlew
 
+      - name: Generate debug keystore
+        script: |
+          keytool -genkeypair -v \
+            -keystore android/app/debug.keystore \
+            -alias androiddebugkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US"
+          echo "Keystore generated!"
+
       - name: Create autolinking.json
         script: |
           mkdir -p android/build/generated/autolinking
           node -e "
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            const rnVersion = pkg.dependencies['react-native'] || '0.76.5';
             const autolink = {
-              reactNativeVersion: rnVersion,
+              reactNativeVersion: pkg.dependencies['react-native'] || '0.76.5',
               project: {
                 android: {
                   packageName: 'com.helloworld',
@@ -39,10 +50,7 @@ workflows:
               },
               dependencies: {}
             };
-            fs.writeFileSync(
-              'android/build/generated/autolinking/autolinking.json',
-              JSON.stringify(autolink, null, 2)
-            );
+            fs.writeFileSync('android/build/generated/autolinking/autolinking.json', JSON.stringify(autolink, null, 2));
             console.log('autolinking.json created');
           "
 
