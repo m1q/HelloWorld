@@ -25,6 +25,13 @@ workflows:
             const rnVersion = pkg.dependencies['react-native'] || '0.76.5';
             const autolink = {
               reactNativeVersion: rnVersion,
+              project: {
+                android: {
+                  packageName: 'com.helloworld',
+                  sourceDir: 'android',
+                  appName: 'HelloWorld'
+                }
+              },
               dependencies: {}
             };
             fs.writeFileSync(
