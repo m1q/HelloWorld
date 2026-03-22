@@ -31,7 +31,6 @@ workflows:
             -storepass android \
             -keypass android \
             -dname "CN=Android Debug,O=Android,C=US"
-          echo "Keystore generated!"
 
       - name: Create autolinking.json
         script: |
@@ -57,7 +56,7 @@ workflows:
       - name: Build Android debug APK
         script: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew clean assembleDebug --no-daemon
 
     artifacts:
       - android/app/build/outputs/apk/debug/app-debug.apk
