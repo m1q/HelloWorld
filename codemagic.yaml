@@ -10,6 +10,11 @@ workflows:
         script: |
           npm install
 
+      - name: Remove Zone.Identifier files
+        script: |
+          find . -name "*Zone.Identifier*" -delete
+          echo "Cleaned Zone.Identifier files"
+
       - name: Generate Gradle wrapper
         script: |
           cd android
@@ -38,7 +43,7 @@ workflows:
               'android/build/generated/autolinking/autolinking.json',
               JSON.stringify(autolink, null, 2)
             );
-            console.log('autolinking.json created successfully');
+            console.log('autolinking.json created');
           "
 
       - name: Build Android debug APK
